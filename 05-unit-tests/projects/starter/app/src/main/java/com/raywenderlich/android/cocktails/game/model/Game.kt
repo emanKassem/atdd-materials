@@ -12,7 +12,7 @@ class Game(var highest :Int = 0) {
     }
 
     fun incrementScore()
-    {
+        {
         currentScore++
         if(currentScore > highScore)
             highScore = currentScore

@@ -32,35 +32,9 @@ package com.raywenderlich.android.cocktails.game.model
 
 import org.junit.Assert
 import org.junit.Test
+import org.mockito.kotlin.*
 
 class GameUnitTests {
-
-  @Test
-  fun whenIncrementingScore_shouldIncrementCurrentScore() {
-    val game = Game(emptyList(), 0)
-
-    game.incrementScore()
-
-    Assert.assertEquals("Current score should have been 1", 1, game.currentScore)
-  }
-
-  @Test
-  fun whenIncrementingScore_aboveHighScore_shouldAlsoIncrementHighScore() {
-    val game = Game(emptyList(), 0)
-
-    game.incrementScore()
-
-    Assert.assertEquals(1, game.highestScore)
-  }
-
-  @Test
-  fun whenIncrementingScore_belowHighScore_shouldNotIncrementHighScore() {
-    val game = Game(emptyList(), 10)
-
-    game.incrementScore()
-
-    Assert.assertEquals(10, game.highestScore)
-  }
 
   @Test
   fun whenGettingNextQuestion_shouldReturnIt() {
@@ -83,5 +57,36 @@ class GameUnitTests {
     val nextQuestion = game.nextQuestion()
 
     Assert.assertNull(nextQuestion)
+  }
+
+  @Test
+  fun whenAnswering_shouldDelegateToQuestion()
+  {
+    val question = mock<Question>()
+    val game = Game(listOf(question))
+    game.answer(question, "OPTION")
+    verify(question, times(1)).answer(eq("OPTION"))
+  }
+
+  @Test
+  fun whenAnsweringCorrectly_shouldIncrementCurrentScore()
+  {
+    val question = mock<Question>()
+    whenever(question.answer(any())).thenReturn(true)
+    val score = mock<Score>()
+    val game = Game(listOf(question), score)
+    game.answer(question, "OPTION")
+    verify(score, times(1)).increment()
+  }
+
+  @Test
+  fun whenAnsweringIncorrectly_shouldNotIncrementScore()
+  {
+    val question = mock<Question>()
+    whenever(question.answer(any())).thenReturn(false)
+    val score = mock<Score>()
+    val game = Game(listOf(question), score)
+    game.answer(question, "OPTION")
+    verify(score, never()).increment()
   }
 }

@@ -45,4 +45,10 @@ class GameUnitTests {
         Assert.assertNull(question)
     }
 
+    @Test
+    fun whenAnswering_shouldDelegateToQuestion()
+    {
+        val question = 
+    }
+
 }

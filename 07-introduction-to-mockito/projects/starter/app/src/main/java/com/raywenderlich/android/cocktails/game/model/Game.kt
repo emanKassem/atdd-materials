@@ -31,28 +31,25 @@
 package com.raywenderlich.android.cocktails.game.model
 
 class Game(private val questions: List<Question>,
-           highest: Int = 0) {
-  var currentScore = 0
-    private set
+           val score: Score = Score(0)) {
 
-  var highestScore = highest
-    private set
 
-  private var questionIndex = -1
+    private var questionIndex = -1
 
-  fun incrementScore() {
-    currentScore++
-    if (currentScore > highestScore) {
-      highestScore = currentScore
+
+    fun nextQuestion(): Question? {
+        if (questionIndex + 1 < questions.size) {
+            questionIndex++
+            return questions[questionIndex]
+        }
+        return null
     }
-  }
 
-  fun nextQuestion(): Question? {
-    if (questionIndex + 1 < questions.size) {
-      questionIndex++
-      return questions[questionIndex]
+    fun answer(question: Question, option: String) {
+        val result = question.answer(option)
+        if (result)
+            score.increment()
     }
-    return null
-  }
+
 
 }
